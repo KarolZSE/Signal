@@ -6,14 +6,27 @@
     <title>Signal</title>
 </head>
 <style>
+    body {
+        overflow: hidden;
+    }
+
     #Player {
         position: absolute;
         background: url("PlayerScope.png") no-repeat center;
         background-size: contain;
         width: 100px;
         height: 100px;
-        transition: left 0.01s linear, top 0.01s linear;
     }
+
+    .enemy {
+        position: absolute;
+        background: chocolate;
+        width: 20px;
+        height: 20px;
+        transition: top 5s linear;
+        top: 0;
+    }
+
 </style>
 <body>
     <p><span id="LocationX">123</span> , <span id="LocationY">123</span></p>
@@ -24,8 +37,18 @@
     const LocationX = document.getElementById("LocationX");
     const LocationY = document.getElementById("LocationY");
 
+    document.addEventListener("mousemove", (e) => {
+        console.log(Player.offsetHeight, typeof(temp));
+        temp = e.clientY - Player.offsetHeight / 2 + 'px';
+        Player.style.top = temp;
+        LocationY.textContent = parseInt(temp) + Player.offsetHeight / 2;
+        temp = e.clientX - Player.offsetWidth / 2 + 'px';
+        Player.style.left = temp;
+        LocationX.textContent = parseInt(temp) + Player.offsetWidth / 2;
+
+    });
+    /*
     window.addEventListener('keydown', function(e) {
-        let temp = document.body.clientHeight;
         if ('a' === e.key.toLowerCase()) {
             Player.style.left = Player.offsetLeft - 11 + 'px';
             LocationX.textContent = Player.offsetLeft;
@@ -40,5 +63,28 @@
             LocationY.textContent = Player.offsetTop;
         }
     })
+        */
+
+    function SpawnEnemy() {
+        const enemy = document.createElement('div');
+        enemy.classList.add('enemy');
+        enemy.style.left = Math.random() * 100 + '%';
+        document.body.appendChild(enemy);
+        setTimeout(() => enemy.style.top = '100%', 1);
+        setTimeout(() => {
+           enemy.remove(); 
+        }, 5000);
+    }
+
+    let x = 1000;
+    function WaitToSpawnEnemy() {
+        SpawnEnemy();
+        console.log(x);
+        x--;
+        setTimeout(() => {
+            WaitToSpawnEnemy();
+        }, x);       
+    }
+    WaitToSpawnEnemy();
 </script>
 </html>
