@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signal</title>
+</head>
+<style>
+    #Player {
+        position: absolute;
+        background: url("PlayerScope.png") no-repeat center;
+        background-size: contain;
+        width: 100px;
+        height: 100px;
+        transition: left 0.01s linear, top 0.01s linear;
+    }
+</style>
+<body>
+    <p><span id="LocationX">123</span> , <span id="LocationY">123</span></p>
+    <div id="Player"></div>
+</body>
+<script>
+    const Player = document.getElementById("Player");
+    const LocationX = document.getElementById("LocationX");
+    const LocationY = document.getElementById("LocationY");
+
+    window.addEventListener('keydown', function(e) {
+        let temp = document.body.clientHeight;
+        if ('a' === e.key.toLowerCase()) {
+            Player.style.left = Player.offsetLeft - 11 + 'px';
+            LocationX.textContent = Player.offsetLeft;
+        } else if ('d' === e.key.toLowerCase()) {
+            Player.style.left = Player.offsetLeft + 11 + 'px';
+            LocationX.textContent = Player.offsetLeft;
+        } else if ('w' === e.key.toLowerCase()) {
+            Player.style.top = Player.offsetTop - 11 + 'px';
+            LocationY.textContent = Player.offsetTop;
+        } else if ('s' === e.key.toLowerCase()) {
+            Player.style.top = Player.offsetTop + 11 + 'px';
+            LocationY.textContent = Player.offsetTop;
+        }
+    })
+</script>
+</html>
