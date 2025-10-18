@@ -21,11 +21,25 @@
 
     .enemy {
         position: absolute;
-        background: chocolate;
-        width: 20px;
-        height: 20px;
+        background-image: url("body_halftrack.gif");
+        background-repeat: no-repeat;
+        background-position: center;
+        image-rendering: pixelated;
+        width: 96px;
+        height: 96px;
         transition: top 5s linear;
         top: 0;
+        transform: rotate(180deg);
+    }
+
+    .enemyturret {
+        position: absolute;
+        width: 96px;
+        height: 96px;
+        background-image: url('turret_01_mk1.png');
+        background-size: 768px 96px;
+        background-position: 0 0;
+        image-rendering: pixelated;
     }
 
     .plane {
@@ -52,9 +66,29 @@
         color: transparent;
     }
 
+    .enemyline {
+        display: none;
+        width: 2px;
+        top: 20px;
+        height: 100%;
+        background: red;
+        position: absolute;
+        user-select: none;
+        transition: top 5s linear;
+        color: transparent;
+    }
+
     .marker {
         position: absolute;
         top: -20px;
+        font-size: 12px;
+        color: black;
+    }
+
+    .enemymarker {
+        position: absolute;
+        left: 20px;
+        width: 50px;
         font-size: 12px;
         color: black;
     }
@@ -79,63 +113,71 @@
         temp = e.clientX - Player.offsetWidth / 2 + 'px';
         Player.style.left = temp;
         LocationX.textContent = parseInt(temp) + Player.offsetWidth / 2;
-        line.style.width = window.screen.width - e.clientX + 'px';
+        line.style.width = window.innerWidth - e.clientX + 'px';
         line.style.left = e.clientX - Player.offsetWidth / 100 + 'px';
         line.style.top = e.clientY - Player.offsetHeight / 100 + 'px';
-        line.textContent = (1.5 / (window.screen.width / (window.screen.width - e.clientX))).toFixed(2) + ' sec';
-        for (let x = 0; x <= window.screen.width; x+= 100) {
+        line.textContent = (1.5 / (window.innerWidth / (window.innerWidth - e.clientX))).toFixed(2) + ' sec';
+        line.innerHTML = '';
+        for (let x = 0; x <= window.innerWidth; x+= 100) {
             const label = document.createElement('span');
             label.classList.add('marker');
             label.style.left = `${x}px`;
-            label.textContent = (1.5 / (window.screen.width / (window.screen.width - e.clientX - x))).toFixed(2) + ' sec';
+            label.textContent = (1.5 / (window.innerWidth / (window.innerWidth - e.clientX - x))).toFixed(2) + ' sec';
             line.appendChild(label);
         }
     });
 
-    /*
-    window.addEventListener('keydown', function(e) {
-        if ('a' === e.key.toLowerCase()) {
-            Player.style.left = Player.offsetLeft - 11 + 'px';
-            LocationX.textContent = Player.offsetLeft;
-        } else if ('d' === e.key.toLowerCase()) {
-            Player.style.left = Player.offsetLeft + 11 + 'px';
-            LocationX.textContent = Player.offsetLeft;
-        } else if ('w' === e.key.toLowerCase()) {
-            Player.style.top = Player.offsetTop - 11 + 'px';
-            LocationY.textContent = Player.offsetTop;
-        } else if ('s' === e.key.toLowerCase()) {
-            Player.style.top = Player.offsetTop + 11 + 'px';
-            LocationY.textContent = Player.offsetTop;
-        }
-    })
-        */
-
+    let enemyCounter = 0;
     function SpawnEnemy() {
         const enemy = document.createElement('div');
         enemy.classList.add('enemy');
-        enemy.style.left = Math.random() * 100 + '%';
+
+        const temp = Math.random();
+        const enemyLeft = window.innerWidth * temp
+        enemy.style.left = enemyLeft + 'px';
         document.body.appendChild(enemy);
-        setTimeout(() => enemy.style.top = '100%', 1);
-        setTimeout(() => {
-            enemy.remove(); 
-        }, 5000);
+
+        const enemyturret = document.createElement('div');
+        enemyturret.classList.add('enemyturret');
+
+        enemyturret.style.left = (enemy.offsetWidth / 2 - 48) + 'px';
+
+        enemy.appendChild(enemyturret);
+        AnimateSprite(enemyturret, 0);
+
+        setTimeout(() => enemy.style.top = window.innerHeight + 'px', 1);
+        setTimeout(() => enemy.remove(), 5000);
 
         const enemyline = document.createElement('div');
         enemyline.classList.add('enemyline');
-        enemyline.style.left = enemy.offsetLeft;
+        enemyline.style.left = enemyLeft + (enemy.offsetWidth / 2) + 'px';
+       
+        const lineID = `line-${enemyCounter++}`;
+        enemyline.id = lineID;
+        enemy.dataset.lineID = lineID;
+
         document.body.appendChild(enemyline);
 
-        /*
-        for (let x = 0; x <= window.screen.width; x+= 100) {
+        setTimeout(() => enemyline.style.top = window.innerHeight + 20 + 'px', 1);
+        setTimeout(() => {if (enemyline.parentNode) enemyline.remove();}, 5000);
+
+        let licznik = 0;
+        for (let x = 0; x <= window.innerWidth; x+= window.innerWidth / 20) {
+            licznik++;
             const label = document.createElement('span');
-            label.classList.add('marker');
+            label.classList.add('enemymarker');
             label.style.top = `${x}px`;
-            label.textContent = (1.5 / (window.screen.height / (window.screen.height - enemy.style.top - x))).toFixed(2) + ' sec';
+            label.textContent =  licznik / 2 + ' sec';
             enemyline.appendChild(label);
         }
-            */
     }
 
+    function AnimateSprite(sprite, frame) {
+        sprite.style.backgroundPosition = `-${frame * 96}px 0`;
+        frame = (frame + 1) % 8;
+        setTimeout(() => AnimateSprite(sprite, frame), 200);
+    }
+    
     let x = 1000;
     function WaitToSpawnEnemy() {
         SpawnEnemy();
@@ -146,6 +188,8 @@
     }
     WaitToSpawnEnemy();
 
+    const FireInTheHole = new Audio('FireInTheHole.mp3');
+    const Explosion = new Audio('explosion.mp3');
     document.addEventListener("mousedown", (e) => {
         const plane = document.createElement('div');
         plane.classList.add('plane');
@@ -153,10 +197,8 @@
         document.body.appendChild(plane);
         setTimeout(() => plane.style.left = '-50px', 1);
         setTimeout(() => {
-            console.log("Flew to");
             const payload = document.createElement('div');
             payload.classList.add('payload');
-            console.log(e.clientX);
             document.body.appendChild(payload);
 
             // If you want this to by dynamic (Player.offsetWidth / payload.offsetWidth * 2) and not 5
@@ -165,14 +207,18 @@
             setTimeout(() => {
                 payload.classList.add('destruction');
                 payload.style.background = "yellow";
+                const ExplosionClone = Explosion.cloneNode();
+                ExplosionClone.play();
             }, 300);
             setTimeout(() => {
                 payload.remove();
             }, 2000);
-        }, 1500 / (window.screen.width / (window.screen.width - e.clientX)));
+        }, 1500 / (window.innerWidth / (window.innerWidth - e.clientX)));
         setTimeout(() => {
             plane.remove();
         }, 3100);
+        const FireInTheHoleClone = FireInTheHole.cloneNode();
+        FireInTheHoleClone.play();
     })
 
     const PlayerBase = document.getElementById("PlayerBase");
@@ -183,6 +229,9 @@
         payloads.forEach(payload => {
             enemies.forEach(enemy => {
                 if (isColliding(enemy, payload)) {
+                    const lineID = enemy.dataset.lineID;
+                    const enemyline = document.getElementById(lineID);
+                    if (enemyline) enemyline.remove();
                     enemy.remove();
                 }
             });
@@ -190,11 +239,12 @@
 
         enemies.forEach(enemy => {
             if (isColliding(enemy, PlayerBase)) {
-                console.log("ENEMY WENT OVER");
+                const lineID = enemy.dataset.lineID;
+                const enemyline = document.getElementById(lineID);
+                if (enemyline) enemyline.remove();
                 enemy.remove();
             }
         });
-
         requestAnimationFrame(CheckCollision);
     }
 
@@ -209,7 +259,7 @@
             rect1.right < rect2.left
         );
     }
-
+    
     CheckCollision();
 </script>
 </html>
