@@ -3,18 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signal</title>
+    <title>Guided by signals</title>
+    <link rel="icon" type="image/x-icon" href="Icon.png">
 </head>
 <style>
     body {
         overflow: hidden;
         margin: 0;
+        background: url('BG.png');
+        font-family: 'VCR_OSD';
+        user-select: none;
+    }
+
+    @font-face {
+        font-family: '4Brain';
+        src: url('4Brain.ttf');
+    }
+
+    @font-face {
+        font-family: 'VCR_OSD';
+        src: url('VCR_OSD_MONO.ttf');
     }
 
     #Player {
         position: absolute;
         background: url("PlayerScope.png") no-repeat center;
         background-size: contain;
+        image-rendering: pixelated;
+        z-index: 1;
         width: 100px;
         height: 100px;
     }
@@ -36,7 +52,6 @@
         position: absolute;
         width: 96px;
         height: 96px;
-        background-image: url('turret_01_mk1.png');
         background-size: 768px 96px;
         background-position: 0 0;
         image-rendering: pixelated;
@@ -44,21 +59,44 @@
 
     .plane {
         position: absolute;
-        background: gray;
         width: 50px;
         height: 50px;
+        background: url('Planes.png') no-repeat;
+
+        background-position: 0 0;
+        background-size: 200px 50px;
+
+        transform: rotate(270deg);
         transition: left 1.5s linear;
         left: 100%;
+        image-rendering: pixelated;
     }
 
     .payload {
         width: 40px;
         height: 40px;
         position: absolute;
-        background: red;
+        background: url('Payload.png') no-repeat;
+
+        background-position: 0 0;
+        background-size: 1320px 40px;
+
+        transform: scale(1);
+        transition: transform 1s linear;
+        image-rendering: pixelated;
+    }
+
+    .destruction {
+        width: 40px;
+        height: 40px;
+        position: absolute;
+        background: url('Preview.gif');
+        background-repeat: no-repeat;
+        background-position: center;
     }
 
     #line {
+        display: none;
         height: 2px;
         background: red;
         position: absolute;
@@ -69,7 +107,7 @@
     .enemyline {
         display: none;
         width: 2px;
-        top: 20px;
+        top: 96px;
         height: 100%;
         background: red;
         position: absolute;
@@ -87,26 +125,110 @@
 
     .enemymarker {
         position: absolute;
-        left: 20px;
+        left: 5px;
         width: 50px;
         font-size: 12px;
         color: black;
     }
 
+    #MiddleBar {
+        position: absolute;
+        display: flex;
+        width: 30%;
+        left: 50%; 
+        transform: translate(-50%);
+        text-align: center;
+        flex-direction: column;
+    }
+
+    #BaseHealt {
+        width: 100%;
+        border: 1px solid black;
+        background:#90ee90;
+    }
+
+    #Menu {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 500px;
+        height: 500px;
+        background: url('0.png') no-repeat;
+        background-size: 500px 500px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+        image-rendering: pixelated;
+        z-index: 2;
+    }
+
+    #start {
+        margin: 10px;
+        width: 100px; 
+        height: 100px; 
+        border: 10px solid #d1b296;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        animation: pulse 1s infinite alternate;
+    }
+
+    @keyframes pulse {
+        from {transform: scale(0.9);}
+        to {transform: scale(1);}
+    }
+
+    #AimAssist {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        height: 50px;
+        width: 100px;
+        border: 1px solid black;
+        display: flex;
+        align-items: center;
+        padding: 5px;
+        background: #e9d9b8;
+    }
+
+    #MenuText {
+        font-family: 'VCR_OSD'; 
+        font-size: 20px;
+        width: 85%;
+    }
+
 </style>
 <body>
-    <p><span id="LocationX">123</span> , <span id="LocationY">123</span></p>
+    <div id="Menu">
+        <h1 style="font-family: '4Brain';">— Guided by signals —</h1>
+        <span id="MenuText">Welcome, Operator! You are here on a mission, to guide our pilots by giving them signals and destroy those rogue tanks! (Don't worry there are no humans inside). If you want to learn more please check the README file.</span>
+        <div id="start">Start the day!</div>
+    </div>
+    <div id="MiddleBar">
+        <div id="BaseHealt"><span id="HealtText">100</span> / 100</div>
+        <div>Todays quota: <span id="CountText">0</span> / <span id="QoutaText">10</span></div>
+    </div>
+    <div style="position: absolute; right: 10px; top: 10px;">Day <span id="DayCount">1</span></div>
+    <p style="position: absolute; left: 10px;"><span id="LocationX">123</span> , <span id="LocationY">123</span></p>
     <div id="Player"></div>
     <div id="line">123</div>
-    <hr id="PlayerBase" style="position: absolute; bottom: 0; width: 100%; border-color: blue;">
+    <hr id="PlayerBase" style="position: absolute; bottom: -96px; width: 100%; border-color: blue;">
+    <div id="AimAssist">Aim Assist<img src="PlayerScope.png" width="40px" height="40px"></div>
 </body>
 <script>
     const Player = document.getElementById("Player");
     const LocationX = document.getElementById("LocationX");
     const LocationY = document.getElementById("LocationY");
     const line = document.getElementById('line');
+    let Disabled = true;
 
     document.addEventListener("mousemove", (e) => {
+        if (Disabled) return;
         temp = e.clientY - Player.offsetHeight / 2 + 'px';
         Player.style.top = temp;
         LocationY.textContent = parseInt(temp) + Player.offsetHeight / 2;
@@ -129,17 +251,18 @@
 
     let enemyCounter = 0;
     function SpawnEnemy() {
+        if (Disabled) return;
         const enemy = document.createElement('div');
         enemy.classList.add('enemy');
 
         const temp = Math.random();
-        const enemyLeft = window.innerWidth * temp
+        const enemyLeft = (window.innerWidth - 96) * temp;
         enemy.style.left = enemyLeft + 'px';
         document.body.appendChild(enemy);
 
         const enemyturret = document.createElement('div');
         enemyturret.classList.add('enemyturret');
-
+        enemyturret.style.backgroundImage = `url('Turrets/turret_01_mk${Math.floor(Math.random() * 4) + 1}.png')`;
         enemyturret.style.left = (enemy.offsetWidth / 2 - 48) + 'px';
 
         enemy.appendChild(enemyturret);
@@ -158,7 +281,7 @@
 
         document.body.appendChild(enemyline);
 
-        setTimeout(() => enemyline.style.top = window.innerHeight + 20 + 'px', 1);
+        setTimeout(() => enemyline.style.top = window.innerHeight + 96 + 'px', 1);
         setTimeout(() => {if (enemyline.parentNode) enemyline.remove();}, 5000);
 
         let licznik = 0;
@@ -180,8 +303,9 @@
     
     let x = 1000;
     function WaitToSpawnEnemy() {
+        if (Disabled) return;
         SpawnEnemy();
-        x--;
+        if (x > 100) x--;
         setTimeout(() => {
             WaitToSpawnEnemy();
         }, x);       
@@ -191,38 +315,76 @@
     const FireInTheHole = new Audio('FireInTheHole.mp3');
     const Explosion = new Audio('explosion.mp3');
     document.addEventListener("mousedown", (e) => {
+        if (Disabled) return;
         const plane = document.createElement('div');
         plane.classList.add('plane');
+        plane.style.backgroundPosition = `-${Math.floor(Math.random() * 4) * 50}px 0`;
         plane.style.top = e.clientY - Player.offsetHeight / 4 + 'px';
         document.body.appendChild(plane);
         setTimeout(() => plane.style.left = '-50px', 1);
         setTimeout(() => {
             const payload = document.createElement('div');
             payload.classList.add('payload');
+            setTimeout(() => payload.style.transform = "scale(0.5)", 1);
             document.body.appendChild(payload);
 
             // If you want this to by dynamic (Player.offsetWidth / payload.offsetWidth * 2) and not 5
             payload.style.left = e.clientX - Player.offsetWidth / 5 + 'px';
             payload.style.top = e.clientY - Player.offsetHeight / 5 + 'px';
+
+            let temp = 0;
+            const AnimateFall = setInterval(() => {
+                temp++;
+                payload.style.backgroundPosition = `-${temp * 40}px 0`;
+                if (temp >= 34) {
+                    clearInterval(AnimateFall);
+                }
+            }, 12.3);
+            
             setTimeout(() => {
+                clearInterval(AnimateFall);
+                payload.style.backgroundPosition = `0 0`;
+                payload.style.transition = 'none';
+                payload.style.transform = "scale(2)"
+                payload.offsetHeight;
+
                 payload.classList.add('destruction');
-                payload.style.background = "yellow";
-                const ExplosionClone = Explosion.cloneNode();
-                ExplosionClone.play();
+                PlaySound(Explosion);
             }, 300);
             setTimeout(() => {
                 payload.remove();
-            }, 2000);
+            }, 700);
         }, 1500 / (window.innerWidth / (window.innerWidth - e.clientX)));
         setTimeout(() => {
             plane.remove();
         }, 3100);
-        const FireInTheHoleClone = FireInTheHole.cloneNode();
-        FireInTheHoleClone.play();
+        PlaySound(FireInTheHole);
     })
 
+    function PlaySound(sound) {
+        const clone = sound.cloneNode();
+        clone.style.display = 'none';
+        document.body.appendChild(clone);
+        clone.play();
+        clone.addEventListener('ended', () => clone.remove());
+    }
+
+    let healt = 100;
     const PlayerBase = document.getElementById("PlayerBase");
+    const HealtText = document.getElementById("HealtText");
+    const BaseHealt = document.getElementById("BaseHealt");
+
+    let Qouta = 0;
+    let Count = 0;
+    const CountText = document.getElementById("CountText");
+    const QoutaText = document.getElementById("QoutaText");
+
+    const Menu = document.getElementById('Menu');
+    const DayCount = document.getElementById('DayCount');
+    const MenuText = document.getElementById('MenuText');
+
     function CheckCollision() {
+        if (Disabled) return;
         const payloads = document.querySelectorAll('.destruction');
         const enemies = document.querySelectorAll('.enemy');
 
@@ -233,6 +395,29 @@
                     const enemyline = document.getElementById(lineID);
                     if (enemyline) enemyline.remove();
                     enemy.remove();
+                    CountText.textContent = ++Count;
+                    if (Count == Qouta) {
+                        
+                        Count = 0;
+                        Menu.style.display = '';
+                        AimAssist.style.display = '';
+                        MenuText.style.color = '#70b670';
+                        MenuText.textContent = "Congratulations! You've succesfully completed today's quota, your crew made some fixes in the camp, Time to rest, recharge, and get ready to take on the next day! Glory to the base!"
+                        enemies.forEach(enemy => {enemy.remove();});
+                        if (healt > 90) {
+                            healt = 100;
+                        } else {
+                            healt += 10;
+                        }
+
+                        if (healt <= 50) {
+                            BaseHealt.style.background = `linear-gradient(to left, #d38686 ${100 - healt}%, #90ee90 ${healt}%)`;
+                        } else {
+                            BaseHealt.style.background = `linear-gradient(to right, #90ee90 ${healt}%, #d38686 ${100 - healt}%)`;
+                        }
+                        HealtText.textContent = healt;
+                        Disabled = true;
+                    }
                 }
             });
         });
@@ -243,6 +428,21 @@
                 const enemyline = document.getElementById(lineID);
                 if (enemyline) enemyline.remove();
                 enemy.remove();
+                HealtText.textContent = --healt;
+
+                if (healt <= 50) {
+                    BaseHealt.style.background = `linear-gradient(to left, #d38686 ${100 - healt}%, #90ee90 ${healt}%)`;
+                } else {
+                    BaseHealt.style.background = `linear-gradient(to right, #90ee90 ${healt}%, #d38686 ${100 - healt}%)`;
+                }
+
+                if (healt <= 0) {
+                    Menu.style.display = '';
+                    MenuText.style.color = '#b65e5e';
+                    MenuText.innerHTML = "Your base has been destroyed! The enemy has triumphed, your crew has scattered. Rest now, brave warrior - the glory is yours alone! <br><br><br> You cannot start a new day..."
+                    start.style.display = 'none';
+                    Disabled = true;
+                }
             }
         });
         requestAnimationFrame(CheckCollision);
@@ -261,5 +461,47 @@
     }
     
     CheckCollision();
+
+    const start = document.getElementById('start');
+    let DayCountVar = 0;
+    const AimAssist = document.getElementById('AimAssist');
+
+    start.onclick = function() {
+        DayCount.textContent = ++DayCountVar;
+        Disabled = false;
+        Qouta += 10;
+        CountText.textContent = Count;
+        QoutaText.textContent = Qouta;
+        WaitToSpawnEnemy();
+        CheckCollision();
+        Menu.style.display = 'none';
+        AimAssist.style.display = 'none';
+        
+    }
+
+    AimAssistON = false;
+    AimAssist.onclick = function() {
+        if (AimAssistON) {
+            for (let sheet of document.styleSheets) {
+                for (let rule of sheet.cssRules) {
+                    if (rule.selectorText === '.enemyline') {
+                        rule.style.display = 'none';
+                        line.style.display = 'none';
+                    }
+                }
+            }
+            AimAssistON = false;           
+        } else {
+            for (let sheet of document.styleSheets) {
+                for (let rule of sheet.cssRules) {
+                    if (rule.selectorText === '.enemyline') {
+                        rule.style.display = 'inline';
+                        line.style.display = 'inline';
+                    }
+                }
+            }
+            AimAssistON = true;
+        }
+    }
 </script>
 </html>
