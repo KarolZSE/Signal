@@ -2,7 +2,7 @@
 Welcome, Operator! You are here on a mission, to guide our pilots by giving them signals and destroy those rogue tanks! (Don't worry there are no humans inside).
 
 # Gameplay
-You attack by dropping payloads on the enemy tanks, but be careful:
+You attack by dropping (with the left click of a mouse) payloads on the enemy tanks, but be careful:
 - The plane takes time to reach destination (1.5 seconds for the whole map).
 - The payload takes time to fall (0.7 seconds).
 - A single payload can destroy multiple enemies.
@@ -23,4 +23,5 @@ There is also an Aim Assist option - it shows lines your enemies will follow as 
 - Planes textures - https://clavs.itch.io/pixel-planes-assets-pack AUTHOR Clavs ON THE LICENCE CC BY
 - The Tileset for the background - https://wrlck.itch.io/simple-desert AUTHOR wrlck
 - Fire in the hole sound effect - https://elevenlabs.io/sound-effects/fire-in-the-hole AUTHOR elevenlabs.io
+
 - Rest of the of the assets belong to public domain or come from sites like https://pixabay.com
