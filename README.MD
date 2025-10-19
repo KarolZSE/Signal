@@ -8,8 +8,10 @@ You attack by dropping (with the left click of a mouse) payloads on the enemy ta
 - A single payload can destroy multiple enemies.
 
 If an enemy reaches the end of the map, it penetrates your base and you lose 1 HP.
+(You can see the HP on the bar on the top of the page)
 
 You pass the day by meeting the daily quota, the qouta increases by 10 every day!
+(You can see the Qouta right under the health bar)
 
 # Ending
 If your base loses all HP it's destroyed and the game ends.
@@ -25,3 +27,4 @@ There is also an Aim Assist option - it shows lines your enemies will follow as 
 - Fire in the hole sound effect - https://elevenlabs.io/sound-effects/fire-in-the-hole AUTHOR elevenlabs.io
 
 - Rest of the of the assets belong to public domain or come from sites like https://pixabay.com
+
