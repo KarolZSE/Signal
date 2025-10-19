@@ -22,3 +22,5 @@ There is also an Aim Assist option - it shows lines your enemies will follow as 
 - The explosion animation - https://ansimuz.itch.io/explosion-animations-pack AUTHOR ansimuz ON THE LICENCE CC BY 4.0
 - Planes textures - https://clavs.itch.io/pixel-planes-assets-pack AUTHOR Clavs ON THE LICENCE CC BY
 - The Tileset for the background - https://wrlck.itch.io/simple-desert AUTHOR wrlck
+- Fire in the hole sound effect - https://elevenlabs.io/sound-effects/fire-in-the-hole AUTHOR elevenlabs.io
+- Rest of the of the assets belong to public domain or come from sites like https://pixabay.com
