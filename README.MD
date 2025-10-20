@@ -2,7 +2,9 @@
 I sorry but I have no idea in which part you find the AI. 
 I tried asking you and you went in to a long sleep. 
 I tried searching for the issue that could be marked as AI and the only thing I 
-found is a generic Collision detection function, I cannot thing of anything else.
+found is a generic Collision detection function and the long css, I cannot thing of anything else.
+I don't have a recording for my progress other then a github commit history and a paper note with calculations for the 
+time it takes for the plane to fly over to a clicked point in the payload drop.
 
 # Guided by signals
 Welcome, Operator! You are here on a mission, to guide our pilots by giving them signals and destroy those rogue tanks! (Don't worry there are no humans inside).
@@ -33,5 +35,6 @@ There is also an Aim Assist option - it shows lines your enemies will follow as 
 - Fire in the hole sound effect - https://elevenlabs.io/sound-effects/fire-in-the-hole AUTHOR elevenlabs.io
 
 - Rest of the of the assets belong to public domain or come from sites like https://pixabay.com
+
 
 
