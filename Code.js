@@ -5,6 +5,7 @@
     const line = document.getElementById('line');
     let Disabled = true;
 
+    // Detecting and making the player move
     document.addEventListener("mousemove", (e) => {
         if (Disabled) return;
         temp = e.clientY - Player.offsetHeight / 2 + 'px';
@@ -27,6 +28,8 @@
         }
     });
 
+    // Creating enemies animating them and destroying 
+    // them after they reach the end (5s becouse of 5s transition)
     let enemyCounter = 0;
     function SpawnEnemy() {
         if (Disabled) return;
@@ -73,12 +76,14 @@
         }
     }
 
+    // Animating the turret of enemy
     function AnimateSprite(sprite, frame) {
         sprite.style.backgroundPosition = `-${frame * 96}px 0`;
         frame = (frame + 1) % 8;
         setTimeout(() => AnimateSprite(sprite, frame), 200);
     }
     
+    // Making the enemy spawn faster after each spawn
     let x = 1000;
     function WaitToSpawnEnemy() {
         if (Disabled) return;
@@ -90,6 +95,7 @@
     }
     WaitToSpawnEnemy();
 
+    // Summoning the payload (by clicking)
     const FireInTheHole = new Audio('Sounds/FireInTheHole.mp3');
     const Explosion = new Audio('Sounds/explosion.mp3');
     document.addEventListener("mousedown", (e) => {
@@ -100,17 +106,18 @@
         plane.style.top = e.clientY - Player.offsetHeight / 4 + 'px';
         document.body.appendChild(plane);
         setTimeout(() => plane.style.left = '-50px', 1);
+        // Making the payload fall
         setTimeout(() => {
             const payload = document.createElement('div');
             payload.classList.add('payload');
             setTimeout(() => payload.style.transform = "scale(0.5)", 1);
             document.body.appendChild(payload);
 
-            // If you want this to by dynamic (Player.offsetWidth / payload.offsetWidth * 2) and not 5
             payload.style.left = e.clientX - Player.offsetWidth / 5 + 'px';
             payload.style.top = e.clientY - Player.offsetHeight / 5 + 'px';
 
             let temp = 0;
+            // Animating the payload fall
             const AnimateFall = setInterval(() => {
                 temp++;
                 payload.style.backgroundPosition = `-${temp * 40}px 0`;
@@ -119,6 +126,7 @@
                 }
             }, 12.3);
             
+            // Changing the payload in to an explosion
             setTimeout(() => {
                 clearInterval(AnimateFall);
                 payload.style.backgroundPosition = `0 0`;
@@ -139,6 +147,8 @@
         PlaySound(FireInTheHole);
     })
 
+    // Making the sound element dissapear after each use
+    // So it doesn't memory overload users PC (inifite copies).
     function PlaySound(sound) {
         const clone = sound.cloneNode();
         clone.style.display = 'none';
@@ -161,6 +171,8 @@
     const DayCount = document.getElementById('DayCount');
     const MenuText = document.getElementById('MenuText');
 
+    // Check if payload and enemy touch and destroy the enemy
+    // and check for the filled in qouta (pass to the next round).
     function CheckCollision() {
         if (Disabled) return;
         const payloads = document.querySelectorAll('.destruction');
@@ -200,6 +212,8 @@
             });
         });
 
+     // Check if base and enemy touch and destroy the enemy
+    // and check for the amount of hp the player has (if 0 stop the game)
         enemies.forEach(enemy => {
             if (isColliding(enemy, PlayerBase)) {
                 const lineID = enemy.dataset.lineID;
@@ -226,6 +240,7 @@
         requestAnimationFrame(CheckCollision);
     }
 
+    // Generic function to check for collision (so the other 2 above can work)
     function isColliding(e1, e2) {
         const rect1 = e1.getBoundingClientRect();
         const rect2 = e2.getBoundingClientRect();
@@ -244,6 +259,7 @@
     let DayCountVar = 0;
     const AimAssist = document.getElementById('AimAssist');
 
+    //start button in the menu
     start.onclick = function() {
         DayCount.textContent = ++DayCountVar;
         Disabled = false;
@@ -257,7 +273,8 @@
         
     }
 
-    AimAssistON = false;
+    // Aim assist button (turns on and off the lines)
+    let AimAssistON = false;
     AimAssist.onclick = function() {
         if (AimAssistON) {
             for (let sheet of document.styleSheets) {
