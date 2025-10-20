@@ -1,3 +1,9 @@
+# To the stonemason that reviewed my project
+I sorry but I have no idea in which part you find the AI. 
+I tried asking you and you went in to a long sleep. 
+I tried searching for the issue that could be marked as AI and the only thing I 
+found is a generic Collision detection function, I cannot thing of anything else.
+
 # Guided by signals
 Welcome, Operator! You are here on a mission, to guide our pilots by giving them signals and destroy those rogue tanks! (Don't worry there are no humans inside).
 
@@ -27,4 +33,5 @@ There is also an Aim Assist option - it shows lines your enemies will follow as 
 - Fire in the hole sound effect - https://elevenlabs.io/sound-effects/fire-in-the-hole AUTHOR elevenlabs.io
 
 - Rest of the of the assets belong to public domain or come from sites like https://pixabay.com
+
 
